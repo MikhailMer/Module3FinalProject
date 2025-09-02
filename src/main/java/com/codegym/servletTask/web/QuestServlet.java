@@ -9,6 +9,8 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.Collection;
 
+import static com.codegym.servletTask.web.CookieUtils.findCookiesValueByName;
+
 public class QuestServlet extends HttpServlet{
     private final Repository repository = new Repository();
 
@@ -40,14 +42,5 @@ public class QuestServlet extends HttpServlet{
 
         Cookie[] cookies = request.getCookies();
         request.setAttribute("attempt", findCookiesValueByName("gameAttempt", cookies));
-    }
-
-    private String findCookiesValueByName(String name, Cookie[] cookies) {
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(name)) {
-                return cookie.getValue();
-            }
-        }
-        return  null;
     }
 }
