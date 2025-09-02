@@ -1,18 +1,16 @@
 package com.codegym.servletTask.web;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class AuthServletTest {
 
@@ -44,6 +42,19 @@ public class AuthServletTest {
 
     @Test
     public void testDoPostIncrementsCookieValue() throws IOException {
+      // IMPORTANT NOTE ON THIS TEST
+      // And its associated servlet code
+      // This implementation relies on the Cookie instance to be modified "in place"
+      // Due to the mutable nature of the Cookie type (class), we can do that, and the initial
+      // implementation of this test is relying on that (only passes if the cookie instance is modified)
+      // If for whatever reason we implement this using an immutable approach, the application will still work,
+      // but the test won't pass, even though the business logic is correct.
+      // However, there is no trivial way to verify the cookie placed in the response is the correct one
+      // without resorting to dirty hacks (such as creating our own subclass of Cookie just for testing).
+      // This is an important detail.
+      // I think It could be even useful to bring it up in class for everyone to think about it.
+      // It clearly shows how problematic testing code that relies on mutable data types is.
+      // Also, it shows how problematic becomes introducing business logic into controller's (servlets) code.
         Cookie cookie = new Cookie("gameAttempt", "42");
         Cookie[] cookies = {
                 new Cookie("test_cookie_1", "test value"),
