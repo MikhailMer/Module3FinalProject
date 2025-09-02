@@ -11,17 +11,17 @@ public class AuthServlet extends HttpServlet {
     resp.sendRedirect("index.html");
   }
 
-  private Cookie createAttemptCookie(String attemptValueStr) {
-    if (attemptValueStr != null) {
-      int attemptValue = Integer.parseInt(attemptValueStr);
-      return new Cookie(ATTEMPT_COOKIE_NAME, String.valueOf(attemptValue + 1));
-    } else return new Cookie(ATTEMPT_COOKIE_NAME, "1");
-  }
-
   private void setAttemptCookie(HttpServletRequest req, HttpServletResponse resp) {
-    String attemptValueStr =
-        CookieUtils.findCookiesValueByName(ATTEMPT_COOKIE_NAME, req.getCookies());
-    Cookie attemptCookie = createAttemptCookie(attemptValueStr);
+    Cookie attemptCookie = CookieUtils.findCookieByName(ATTEMPT_COOKIE_NAME, req.getCookies());
+
+    if(attemptCookie != null) {
+      String attemptValueStr = attemptCookie.getValue();
+      int attemptValue = Integer.parseInt(attemptValueStr);
+      attemptCookie.setValue(String.valueOf(attemptValue + 1));
+    } else {
+      attemptCookie = new Cookie(ATTEMPT_COOKIE_NAME, "1");
+    }
+
     resp.addCookie(attemptCookie);
   }
 
